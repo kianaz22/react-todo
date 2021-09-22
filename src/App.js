@@ -10,9 +10,6 @@ function App() {
   const [icon, setIcon] = useState('plus')
   const [id, setId] = useState('')
   const [deleteMode, setDeleteMode] = useState(false)
-  const [videoMode, setVideoMode] = useState(false)
-  const [count, setCount] = useState(localStorage.getItem("count") ? localStorage.getItem("count") : 0)
-  const [videoSrc, setVideoSrc] = useState('')
 
   useEffect(() => {
     localStorage.setItem('todos', JSON.stringify(todos));
@@ -32,7 +29,6 @@ function App() {
     const newTodo = { text: input, date:new Date().toLocaleString(), id: newId,completed:false }
     setTodos(todos => [...todos, newTodo])
     setInput('')
-    check()
     }
   }
   const onToggle = (id) => {
@@ -70,25 +66,8 @@ function App() {
   }
   const onCancel = () => {
     setDeleteMode(false)
-    setVideoMode(false)
   }
-  const check = () => {
-    if (count === 4) {
-      showVideo()
-      setCount(0)
-    }
-    else setCount(count => count + 1)
-  }
-  const showVideo = () => {
-    setVideoMode(true)
-    fetch("https://api.aparat.com/fa/v1/video/video/mostViewedVideos", {
-      "method": "GET"
-    })
-      .then(res => res.json())
-      .then(res => setVideoSrc(res.data[0].attributes.preview_src))
-      .catch(err => console.error(err))
-  }
-
+ 
   return (
     <>
       <div className="background-circle top-right" />
@@ -136,18 +115,7 @@ function App() {
         </div>
       </Dialog>
 
-      <Dialog
-        open={videoMode}
-        disableBackdropClick
-        disableEscapeKeyDown
-      >
-        <button className="btn-close" onClick={onCancel}>
-          <i className="fa fa-times" />
-        </button>
-        <div className="modal-body no-padding">
-          <video src={videoSrc} width="100%" height="100%" controls />
-        </div>
-      </Dialog>
+      
     </>
   );
 }
